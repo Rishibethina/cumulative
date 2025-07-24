@@ -2,5 +2,86 @@
 title: "Untitled"
 format: html
 author: "rishith bethina"
+execute: 
+  echo: false
 ---
 
+
+
+```{r}
+# Load libraries
+library(MASS)
+library(tidyverse)
+library(primer.data)
+library(broom)
+library(marginaleffects)
+library(easystats)
+library(gt)
+
+# Prepare data
+x <- ces |>
+  filter(year == 2020) |>
+  select(approval, ideology, education) |>
+  drop_na() |> 
+  filter(!ideology %in% "Not Sure") |> 
+  mutate(ideology = fct_drop(ideology))
+
+# Fit ordinal logistic regression model
+fit_approval <- polr(approval ~ ideology + education, data = x)
+
+# Bar plot: Approval by ideology
+x |>
+  ggplot(aes(x = ideology, fill = approval)) +
+  geom_bar() +
+  labs(
+    title = "Relationship between President Approval and Political Ideology",
+    subtitle = "Most people strongly disapprove",
+    x = "Political Ideology",
+    y = "Count",
+    fill = "Approval",
+    caption = "Source: 2020 CES"
+  )
+
+# Model summary and pretty table
+tidy_model <- tidy(fit_approval, conf.int = TRUE)
+
+tidy_model %>%
+  gt() %>%
+  tab_header(
+    title = "Model Estimates with 95% Confidence Intervals"
+  ) %>%
+  fmt_number(
+    columns = c(estimate, conf.low, conf.high),
+    decimals = 2
+  ) %>%
+  cols_label(
+    term = "Term",
+    estimate = "Estimate",
+    conf.low = "Lower 95%",
+    conf.high = "Upper 95%"
+  )
+
+# Predict probabilities and plot
+preds <- predictions(fit_approval, newdata = datagrid(ideology, education))
+
+ggplot(preds, aes(x = education, y = estimate, color = ideology, group = ideology)) +
+  geom_line(size = 1.2) +
+  geom_point(size = 2) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = ideology), alpha = 0.15, color = NA) +
+  labs(
+    title = "Predicted Presidential Approval by Ideology and Education",
+    subtitle = "Approval increases with conservatism and shows subtle variation across education levels",
+    caption = "Source: 2020 Cooperative Election Study",
+    x = "Education Level",
+    y = "Predicted Approval Probability",
+    color = "Ideology",
+    fill = "Ideology"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(size = 13),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "right"
+  )
+```

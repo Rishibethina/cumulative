@@ -70,7 +70,46 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cumulative_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+polr(formula = approval ~ ideology + education, data = x)
 
+Coefficients:
+              ideologyLiberal              ideologyModerate 
+                   0.61486022                    2.39760437 
+         ideologyConservative     ideologyVery Conservative 
+                   4.45525288                    5.44610561 
+educationHigh School Graduate         educationSome College 
+                  -0.09573811                   -0.31099458 
+              education2-Year               education4-Year 
+                  -0.32454679                   -0.52082362 
+           educationPost-Grad 
+                  -0.72732760 
+
+Intercepts:
+           Strongly Disapprove|Disapprove / Somewhat Disapprove 
+                                                       2.258003 
+Disapprove / Somewhat Disapprove|Neither Approve nor Disapprove 
+                                                       2.732765 
+      Neither Approve nor Disapprove|Approve / Somewhat Approve 
+                                                       2.818909 
+                    Approve / Somewhat Approve|Strongly Approve 
+                                                       3.932747 
+
+Residual Deviance: 99073.66 
+AIC: 99099.66 </code></pre>
+</div>
+</div>
 
 </main>
 <!-- /main column -->
